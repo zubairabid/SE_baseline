@@ -1,48 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="row">
+<div class="col-md-12">
+    <div class="text-center">
     <h1>Register</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p>
+        <div class="form-group">
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
             {% for error in form.username.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
+        </div class="form-group">
+        <div class="form-group">
             {{ form.name.label }}<br>
             {{ form.name(size=32) }}<br>
             {% for error in form.name.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
+        </div class="form-group">
+        <div class="form-group">
             {{ form.email.label }}<br>
-            {{ form.email(size=64) }}<br>
+            {{ form.email(size=32) }}<br>
             {% for error in form.email.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
+        </div class="form-group">
+        <div class="form-group">
             {{ form.password.label }}<br>
             {{ form.password(size=32) }}<br>
             {% for error in form.password.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
+        </div class="form-group">
+        <div class="form-group">
             {{ form.password2.label }}<br>
             {{ form.password2(size=32) }}<br>
             {% for error in form.password2.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
+        </div class="form-group">
+        <div class="form-group">
             {{ form.teacher.label }}<br>
             {{ form.teacher() }}
-        </p>
-        <p>{{ form.submit() }}</p>
+        </div class="form-group">
+        <div class="form-group">{{ form.submit() }}</div class="form-group">
     </form>
+    </div>
+</div>
+</div>
 {% endblock %}

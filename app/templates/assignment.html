@@ -1,32 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div>
-    <p>Question set by: {{ assignment.setter_username }}</p>
-    <ol>
-        <li>{{ assignment.q1 }}</li>
-        <li>{{ assignment.q2 }}</li>
-        <li>{{ assignment.q3 }}</li>
-    </ol>
-    {% if current_user.teacher %}
+<div class='row'>
+    <div class='col-sm-12'>
+        <div class="card my-2" style="width: 100%">
+            <h5 class="card-header">Assignment {{ assignment.id }}</h5>
+            <div class="card-body mt-2 mb-2">
+                <h6 class="card-subtitle my-2 text-muted">Question set by: {{ assignment.setter_username }}</h6>
+                <ul class="list-group list-group-flush mb-2">
+                    <li class="list-group-item">{{ assignment.q1 }}</li>
+                    {% if assignment.q2 %}
+                    <li class="list-group-item">{{ assignment.q2 }}</li>
+                    {% endif %}
+                    {% if assignment.q3 %}
+                    <li class="list-group-item">{{ assignment.q3 }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="card-footer">
+                {% if current_user.teacher %}
 
-    {% else %}
-        {{ submission.id }}
-        {{ submission.aid }}
-        {{ assignment.id }}
-        {{ submission.submitted }}
-        <form action="" method="post" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.photo.label }}<br>
-                {{ form.photo }} <br>
-                {% for error in form.photo.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p> {{ form.submit() }} </p>
-        </form>
-    {% endif %}
+                {% else %}
+                    {% if submission.submitted %}
+                    <p>Submitted</p>
+                    {% else %}
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <p>
+                        <br>
+                        {{ form.photo }} <br>
+                        {% for error in form.photo.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                        </p>
+                        <p> {{ form.submit() }} </p>
+                    </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

@@ -8,4 +8,4 @@ def get_text(path_to_image):
     external interface
     '''
     image = cv2.imread(path_to_image)
-    return pytesseract.image_to_string(image).strip()
+    text = pytesseract.image_to_string(image).strip()

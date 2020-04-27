@@ -1,22 +1,32 @@
 <div class='row'>
-    <div class='col-xs-12'>
-        <p>Question set by: {{ assignment.setter_username }}</p>
-        <ol>
-            <li>{{ assignment.q1 }}</li>
-            <li>{{ assignment.q2 }}</li>
-            <li>{{ assignment.q3 }}</li>
-        </ol>
-        {% if current_user.teacher %}
-        <a href="{{ url_for('evaluate', aid=assignment.id) }}">Evaluate</a>
-        {% else %}
-            {% if submission.submitted %}
-            {% else %}
-            <a href="{{ url_for('assignment', aid=assignment.id) }}">Submit</a>
-            {% endif %}
-            {{ submission.id }}
-            {{ submission.aid }}
-            {{ assignment.id }}
-            {{ submission.submitted }}
-        {% endif %}
+    <div class='col-sm-12'>
+        <div class="card my-2" style="width: 100%">
+            <h5 class="card-header">Assignment {{ assignment.id }}</h5>
+            <div class="card-body mt-2 mb-2">
+                <h6 class="card-subtitle my-2 text-muted">Question set by: {{ assignment.setter_username }}</h6>
+                <ul class="list-group list-group-flush mb-2">
+                    <li class="list-group-item">{{ assignment.q1 }}</li>
+                    {% if assignment.q2 %}
+                    <li class="list-group-item">{{ assignment.q2 }}</li>
+                    {% endif %}
+                    {% if assignment.q3 %}
+                    <li class="list-group-item">{{ assignment.q3 }}</li>
+                    {% endif %}
+                </ul>
+                {% if current_user.teacher %}
+                <a class="card-link" href="{{ url_for('evaluate', aid=assignment.id) }}">Evaluate</a>
+                {% else %}
+                    {% if submission.submitted %}
+                    {% else %}
+                    <a class="card-link" href="{{ url_for('assignment', aid=assignment.id) }}">Submit</a>
+                    {% endif %}
+                        {% if submission.submitted  %} 
+                        <a class="card-link" href="#">Submitted</a>
+                        {% else %}
+                        <a class="card-link" href="#">Not Submitted</a>
+                        {% endif %}
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
