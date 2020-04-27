@@ -9,3 +9,5 @@ def get_text(path_to_image):
     '''
     image = cv2.imread(path_to_image)
     text = pytesseract.image_to_string(image).strip()
+
+    return text

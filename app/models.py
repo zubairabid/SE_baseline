@@ -18,7 +18,9 @@ class Submissions(db.Model):
     aid = db.Column(db.Integer, index=True)
     uid = db.Column(db.Integer, index=True)
     imglink = db.Column(db.String(140), unique=True)
+    score = db.Column(db.Integer)
     submitted = db.Column(db.Boolean)
+    evaluated = db.Column(db.Boolean)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)

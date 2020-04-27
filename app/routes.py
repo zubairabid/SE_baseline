@@ -7,7 +7,10 @@ from werkzeug.urls import url_parse
 from datetime import datetime
 
 from ocr.ocr import get_text as ocr_module
-#from semanticsimilarity.textsim similarity_module
+from semanticsimilarity.textsim import similarity_module
+from imseg.segment import segmentation_module
+#from semanticsimilarity.texsim import similarity_module
+#from text_detection_ctpn.main.demo import segmentation_module
 
 @login.user_loader
 def load_user(id):
@@ -81,13 +84,21 @@ def evaluate(aid):
     submissions = Submissions.query.filter_by(aid=aid).all()
     render = []
     for submission in submissions:
-        eval_score = eval_module(submission.imglink, aid)
+        if not submission.evaluated:
+            score = 0
+            if submission.submitted:
+                score = eval_module(submission.imglink, aid)
+            submission.evaluated = True
+            submission.score = score
+            db.session.add(submission)
+            db.session.commit()
+        eval_score = submission.score
         render.append((submission, eval_score))
     return render_template('evaluation.html', render=render)
 
 def eval_module(imagelink, aid):
     assignment = Assignment.query.filter_by(id=aid).first_or_404()
-    segments = segmentation_module(imagelink) or ['./tmp/1.png']
+    segments = segmentation_module(imagelink)
     score = 0
     for i, segment in enumerate(segments):
         ocr_text = ocr_module(segment)
@@ -99,17 +110,16 @@ def eval_module(imagelink, aid):
             actual_answer = assignment.a2
         if i == 3:
             actual_answer = assignment.a3
-        score += similarity_module(ocr_text, actual_answer)
+        temp = similarity_module(ocr_text, actual_answer) 
+        if temp >= 3:
+            score += 10
+        elif temp >= 1.5:
+            score += 5
+        else:
+            score += 0
+    
     return score
 
-def segmentation_module(imagelink):
-    return False
-
-#def ocr_module(segment):
-#    return "Filler"
-
-def similarity_module(submission, metric):
-    return 0.5
 
 @app.route('/assignment/<aid>', methods=['GET', 'POST'])
 @login_required
