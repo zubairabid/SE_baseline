@@ -1,8 +1,8 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, AssignmentForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Assignment, Submissions
 from werkzeug.urls import url_parse
 from datetime import datetime
 
@@ -16,17 +16,12 @@ def before_request():
 @app.route('/index')
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'test'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('index.html', title='Home',  posts=posts)
+    assignments = []
+    if current_user.teacher:
+        assignments = [a for a in Assignment.query.all() if a.setter_username==current_user.username]
+    else:
+        assignments = Assignment.query.all()
+    return render_template('index.html', title='Home',  assignments=assignments)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -55,24 +50,25 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
+    print('getting to before validate')
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        print('getting to validate')
+        user = User(name=form.name.data, username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
+        user.set_teacher(form.teacher.data)
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
+    else:
+        print(form.errors)
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/user/<username>')
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = [
-        {'author': user, 'body': 'Test post #1'},
-        {'author': user, 'body': 'Test post #2'}
-    ]
-    return render_template('user.html', user=user, posts=posts)
+    return render_template('user.html', user=user)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
@@ -91,3 +87,34 @@ def edit_profile():
         form.name.data = current_user.name
     return render_template('edit_profile.html', title='Edit Profile',
                            form=form)
+
+@app.route('/create_assignment', methods=['GET', 'POST'])
+@login_required
+def create_assignment():
+    if not current_user.teacher:
+        return redirect(url_for('index'))
+    form = AssignmentForm()
+    if form.validate_on_submit():
+        q1 = form.q1.data
+        q2 = form.q2.data
+        q3 = form.q3.data
+        a1 = form.a1.data
+        a2 = form.a2.data
+        a3 = form.a3.data
+        
+        asgn = Assignment(setter_username=current_user.username, q1=q1,q2=q2,q3=q3,a1=a1,a2=a2,a3=a3)
+        for user in User.query.all():
+            asgn.users.append(user)
+        for user in asgn.users:
+            uid = user.id
+            aid = asgn.id
+            sub = Submissions.query.filter_by(uid=uid).filter_by(aid=aid).first()
+            sub.submitted = False
+            db.session.add(sub)
+        db.session.add(asgn)
+        db.session.commit()
+        flash('Published assignment')
+        return redirect(url_for('index'))
+    return render_template('create_assignment.html', title='Create Assignment', form=form)
+
+

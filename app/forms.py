@@ -13,6 +13,7 @@ class RegistrationForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=3, max=120)])
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=64)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=3, max=140)])
+    teacher = BooleanField('Are you a teacher?')
     password = PasswordField('Password', validators=[DataRequired(), Length(min=3)])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
@@ -43,3 +44,12 @@ class EditProfileForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError('Please use a different username.')
+
+class AssignmentForm(FlaskForm):
+    q1 = TextAreaField('Question 1', validators=[Length(min=0, max=512)])
+    a1 = TextAreaField('Answer 1', validators=[Length(min=0, max=16384)])
+    q2 = TextAreaField('Question 2', validators=[Length(min=0, max=512)])
+    a2 = TextAreaField('Answer 2', validators=[Length(min=0, max=16384)])
+    q3 = TextAreaField('Question 3', validators=[Length(min=0, max=512)])
+    a3 = TextAreaField('Answer 3', validators=[Length(min=0, max=16384)])
+    submit = SubmitField('Publish Question')

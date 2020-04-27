@@ -1,0 +1,13 @@
+<div>
+    <p>Question set by: {{ assignment.setter_username }}</p>
+    <ol>
+        <li>{{ assignment.q1 }}</li>
+        <li>{{ assignment.q2 }}</li>
+        <li>{{ assignment.q3 }}</li>
+    </ol>
+    {% if current_user.teacher %}
+
+    {% else %}
+    
+    {% endif %}
+</div>

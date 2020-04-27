@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Create an Assignment</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.q1.label }}<br>
+            {{ form.q1(size=512) }}<br>
+            {% for error in form.q1.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.a1.label }}<br>
+            {{ form.a1(size=16384) }}<br>
+            {% for error in form.a1.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>
+            {{ form.q2.label }}<br>
+            {{ form.q2(size=512) }}<br>
+            {% for error in form.q2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.a2.label }}<br>
+            {{ form.a2(size=16384) }}<br>
+            {% for error in form.a2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>
+            {{ form.q3.label }}<br>
+            {{ form.q3(size=512) }}<br>
+            {% for error in form.q3.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.a3.label }}<br>
+            {{ form.a3(size=16384) }}<br>
+            {% for error in form.a3.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

@@ -11,9 +11,14 @@ def load_user(id):
 asgn_user = db.Table('association',
         db.Column('user_id', db.Integer, db.ForeignKey('assignment.id'), primary_key=True),
         db.Column('asgn_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-        db.Column('submitted', db.Boolean),
-        db.Column('imagelink', db.String(140))
 )
+
+class Submissions(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    aid = db.Column(db.Integer, index=True)
+    uid = db.Column(db.Integer, index=True)
+    imglink = db.Column(db.String(140), unique=True)
+    submitted = db.Column(db.Boolean)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,6 +26,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(120), index=False, unique=False)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    teacher = db.Column(db.Boolean)
 
     #posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
@@ -39,6 +45,12 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def set_teacher(self, value):
+        self.teacher = True
+
+    def get_teacher(self):
+        return self.teacher
 
 class Assignment(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -2,8 +2,8 @@
 
 {% block content %}
 <h1>Hello, {{ current_user.username }}!</h1>
-{% for post in posts %}
-<p> <strong>{{ post.author.username }}:</strong> {{ post.body }} </p>
+{% for assignment in assignments %}
+    {% include '_assignment.html' %}
 {% endfor %}
 {% endblock %}
 
