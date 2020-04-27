@@ -1,20 +1,22 @@
-<div>
-    <p>Question set by: {{ assignment.setter_username }}</p>
-    <ol>
-        <li>{{ assignment.q1 }}</li>
-        <li>{{ assignment.q2 }}</li>
-        <li>{{ assignment.q3 }}</li>
-    </ol>
-    {% if current_user.teacher %}
-    <a href="{{ url_for('evaluate', aid=assignment.id) }}">Evaluate</a>
-    {% else %}
-        {% if submission.submitted %}
+<div class='row'>
+    <div class='col-xs-12'>
+        <p>Question set by: {{ assignment.setter_username }}</p>
+        <ol>
+            <li>{{ assignment.q1 }}</li>
+            <li>{{ assignment.q2 }}</li>
+            <li>{{ assignment.q3 }}</li>
+        </ol>
+        {% if current_user.teacher %}
+        <a href="{{ url_for('evaluate', aid=assignment.id) }}">Evaluate</a>
         {% else %}
-        <a href="{{ url_for('assignment', aid=assignment.id) }}">Submit</a>
+            {% if submission.submitted %}
+            {% else %}
+            <a href="{{ url_for('assignment', aid=assignment.id) }}">Submit</a>
+            {% endif %}
+            {{ submission.id }}
+            {{ submission.aid }}
+            {{ assignment.id }}
+            {{ submission.submitted }}
         {% endif %}
-        {{ submission.id }}
-        {{ submission.aid }}
-        {{ assignment.id }}
-        {{ submission.submitted }}
-    {% endif %}
+    </div>
 </div>

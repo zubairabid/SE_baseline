@@ -6,6 +6,9 @@ from app.models import User, Assignment, Submissions
 from werkzeug.urls import url_parse
 from datetime import datetime
 
+from ocr.ocr import get_text as ocr_module
+#from semanticsimilarity.textsim similarity_module
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -78,14 +81,34 @@ def evaluate(aid):
     submissions = Submissions.query.filter_by(aid=aid).all()
     render = []
     for submission in submissions:
-        text = ocr_module(submission.imglink) or 'demo text'
-        eval_score = eval_module(text)
+        eval_score = eval_module(submission.imglink, aid)
         render.append((submission, eval_score))
     return render_template('evaluation.html', render=render)
 
-def ocr_module(text):
+def eval_module(imagelink, aid):
+    assignment = Assignment.query.filter_by(id=aid).first_or_404()
+    segments = segmentation_module(imagelink) or ['./tmp/1.png']
+    score = 0
+    for i, segment in enumerate(segments):
+        ocr_text = ocr_module(segment)
+        print(ocr_text)
+        actual_answer = ''
+        if i == 1:
+            actual_answer = assignment.a1
+        if i == 2:
+            actual_answer = assignment.a2
+        if i == 3:
+            actual_answer = assignment.a3
+        score += similarity_module(ocr_text, actual_answer)
+    return score
+
+def segmentation_module(imagelink):
     return False
-def eval_module(text):
+
+#def ocr_module(segment):
+#    return "Filler"
+
+def similarity_module(submission, metric):
     return 0.5
 
 @app.route('/assignment/<aid>', methods=['GET', 'POST'])
