@@ -47,7 +47,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def set_teacher(self, value):
-        self.teacher = True
+        self.teacher = value
 
     def get_teacher(self):
         return self.teacher
@@ -62,3 +62,6 @@ class Assignment(db.Model):
     a2 = db.Column(db.String(16384), index=False, unique=False)
     a3 = db.Column(db.String(16384), index=False, unique=False)
     users = db.relationship('User', secondary=asgn_user, lazy=True, backref=db.backref('asgns', lazy=True))
+
+    def get_id(self):
+        return self.id

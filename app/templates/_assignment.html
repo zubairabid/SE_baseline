@@ -8,6 +8,15 @@
     {% if current_user.teacher %}
 
     {% else %}
-    
+        {% if submission.submitted %}
+        {% else %}
+        <a href="{{ url_for('assignment', aid=assignment.id) }}">Submit</a>
+        {% endif %}
+        {{ submission.id }}
+        {{ submission.aid }}
+        {{ assignment.id }}
+        {% if submission.aid == assignment.id %}
+        {{ submission.submitted }}
+        {% endif %}
     {% endif %}
 </div>

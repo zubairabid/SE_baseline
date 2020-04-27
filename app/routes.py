@@ -1,10 +1,14 @@
-from app import app, db
+from app import app, db, login, photos
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, AssignmentForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, AssignmentForm, SubmitForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Assignment, Submissions
 from werkzeug.urls import url_parse
 from datetime import datetime
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 @app.before_request
 def before_request():
@@ -17,11 +21,14 @@ def before_request():
 @login_required
 def index():
     assignments = []
+    submissions = Submissions.query.filter_by(uid=current_user.id).all()
     if current_user.teacher:
         assignments = [a for a in Assignment.query.all() if a.setter_username==current_user.username]
     else:
         assignments = Assignment.query.all()
-    return render_template('index.html', title='Home',  assignments=assignments)
+
+    ass_sub = zip(assignments, submissions)
+    return render_template('index.html', title='Home',  ass_sub=ass_sub)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -50,9 +57,7 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
-    print('getting to before validate')
     if form.validate_on_submit():
-        print('getting to validate')
         user = User(name=form.name.data, username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         user.set_teacher(form.teacher.data)
@@ -63,6 +68,31 @@ def register():
     else:
         print(form.errors)
     return render_template('register.html', title='Register', form=form)
+
+@app.route('/assignment/<aid>', methods=['GET', 'POST'])
+@login_required
+def assignment(aid):
+    assignment = Assignment.query.filter_by(id=aid).first_or_404()
+    submission = Submissions.query.filter_by(aid=aid).filter_by(uid=current_user.id).first()
+    form = SubmitForm()
+    print("getting to before validation")
+    if form.validate_on_submit():
+        print("beyond validation:")
+        image = form.photo.data
+        #filename = secure_filename(image.filename)
+        #file_url = os.path.join(app.config['UPLOADS_DEFAULT_DEST'], filename)
+        #image.save(file_url)
+        filename = photos.save(image)
+        file_url = photos.url(filename)
+        submission.imglink = file_url
+        submission.submitted = True
+        db.session.add(submission)
+        db.session.commit()
+        flash('Your answer has been submitted')
+        return redirect(url_for('index'))
+    else:
+        print(form.errors)
+    return render_template('assignment.html', assignment=assignment, submission=submission, form=form)
 
 @app.route('/user/<username>')
 @login_required
@@ -105,13 +135,16 @@ def create_assignment():
         asgn = Assignment(setter_username=current_user.username, q1=q1,q2=q2,q3=q3,a1=a1,a2=a2,a3=a3)
         for user in User.query.all():
             asgn.users.append(user)
+
+        db.session.add(asgn)
+        db.session.commit()
+
+        aid = asgn.get_id()
         for user in asgn.users:
             uid = user.id
-            aid = asgn.id
-            sub = Submissions.query.filter_by(uid=uid).filter_by(aid=aid).first()
+            sub = Submissions(uid=uid,aid=aid)
             sub.submitted = False
             db.session.add(sub)
-        db.session.add(asgn)
         db.session.commit()
         flash('Published assignment')
         return redirect(url_for('index'))

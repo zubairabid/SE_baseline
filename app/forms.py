@@ -1,7 +1,10 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from app.models import User
+from app import photos
+from werkzeug.utils import secure_filename
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -53,3 +56,7 @@ class AssignmentForm(FlaskForm):
     q3 = TextAreaField('Question 3', validators=[Length(min=0, max=512)])
     a3 = TextAreaField('Answer 3', validators=[Length(min=0, max=16384)])
     submit = SubmitField('Publish Question')
+
+class SubmitForm(FlaskForm):
+    photo = FileField('Image', validators=[FileRequired(), FileAllowed(photos, 'Images only!')])
+    submit = SubmitField('Submit')

@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Hello, {{ current_user.username }}!</h1>
-{% for assignment in assignments %}
+{% for assignment, submission in ass_sub|reverse %}
     {% include '_assignment.html' %}
 {% endfor %}
 {% endblock %}
