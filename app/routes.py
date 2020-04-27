@@ -69,6 +69,25 @@ def register():
         print(form.errors)
     return render_template('register.html', title='Register', form=form)
 
+@app.route('/evaluate/<aid>', methods=['GET'])
+@login_required
+def evaluate(aid):
+    if not current_user.teacher:
+        flash("You are not authorised to view this page")
+        return redirect(url_for('index'))
+    submissions = Submissions.query.filter_by(aid=aid).all()
+    render = []
+    for submission in submissions:
+        text = ocr_module(submission.imglink) or 'demo text'
+        eval_score = eval_module(text)
+        render.append((submission, eval_score))
+    return render_template('evaluation.html', render=render)
+
+def ocr_module(text):
+    return False
+def eval_module(text):
+    return 0.5
+
 @app.route('/assignment/<aid>', methods=['GET', 'POST'])
 @login_required
 def assignment(aid):

@@ -6,7 +6,7 @@
         <li>{{ assignment.q3 }}</li>
     </ol>
     {% if current_user.teacher %}
-
+    <a href="{{ url_for('evaluate', aid=assignment.id) }}">Evaluate</a>
     {% else %}
         {% if submission.submitted %}
         {% else %}
@@ -15,8 +15,6 @@
         {{ submission.id }}
         {{ submission.aid }}
         {{ assignment.id }}
-        {% if submission.aid == assignment.id %}
         {{ submission.submitted }}
-        {% endif %}
     {% endif %}
 </div>

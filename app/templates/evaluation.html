@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <ul>
+        {% for submission, score in render %}
+        <li>{{ submission.uid }}: {{ score }}</li>
+        {% endfor %}
+    </ul>
+
+
+</div>
+
+{% endblock %}
+
+
