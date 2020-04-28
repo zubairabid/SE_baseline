@@ -111,9 +111,9 @@ def eval_module(imagelink, aid):
         if i == 3:
             actual_answer = assignment.a3
         temp = similarity_module(ocr_text, actual_answer) 
-        if temp >= 3:
+        if temp >= 0.5:
             score += 10
-        elif temp >= 1.5:
+        elif temp >= 0.1:
             score += 5
         else:
             score += 0
