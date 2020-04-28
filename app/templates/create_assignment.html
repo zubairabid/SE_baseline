@@ -1,54 +1,58 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="row">
+<div class="col-sm-12">
     <h1>Create an Assignment</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p>
+        <div class="form-group">
             {{ form.q1.label }}<br>
             {{ form.q1(size=512) }}<br>
             {% for error in form.q1.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
+        </div>
+        <div class="form-group">
             {{ form.a1.label }}<br>
             {{ form.a1(size=16384) }}<br>
             {% for error in form.a1.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
+        </div>
 
-        <p>
+        <div class="form-group">
             {{ form.q2.label }}<br>
             {{ form.q2(size=512) }}<br>
             {% for error in form.q2.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
+        </div>
+        <div class="form-group">
             {{ form.a2.label }}<br>
             {{ form.a2(size=16384) }}<br>
             {% for error in form.a2.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
+        </div>
 
-        <p>
+        <div class="form-group">
             {{ form.q3.label }}<br>
             {{ form.q3(size=512) }}<br>
             {% for error in form.q3.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
+        </div>
+        <div class="form-group">
             {{ form.a3.label }}<br>
             {{ form.a3(size=16384) }}<br>
             {% for error in form.a3.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
+        </div>
 
-        <p>{{ form.submit() }}</p>
+        <div class="form-group">{{ form.submit() }}</div>
     </form>
+</div>
+</div>
 {% endblock %}

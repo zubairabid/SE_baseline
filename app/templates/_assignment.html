@@ -18,13 +18,16 @@
                 {% else %}
                     {% if submission.submitted %}
                     {% else %}
-                    <a class="card-link" href="{{ url_for('assignment', aid=assignment.id) }}">Submit</a>
-                    {% endif %}
-                        {% if submission.submitted  %} 
-                        <a class="card-link" href="#">Submitted</a>
+                        {% if submission.evaluated %}
                         {% else %}
-                        <a class="card-link" href="#">Not Submitted</a>
+                        <a class="card-link" href="{{ url_for('assignment', aid=assignment.id) }}">Submit</a>
                         {% endif %}
+                    {% endif %}
+                    {% if submission.submitted  %} 
+                    <a class="card-link" href="{{ url_for('assignment', aid=assignment.id) }}">Submitted</a>
+                    {% else %}
+                    <a class="card-link" href="{{ url_for('assignment', aid=assignment.id) }}">Not Submitted</a>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

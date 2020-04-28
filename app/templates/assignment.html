@@ -24,17 +24,23 @@
                     {% if submission.submitted %}
                     <p>Submitted</p>
                     {% else %}
-                    <form action="" method="post" enctype="multipart/form-data">
-                        {{ form.hidden_tag() }}
-                        <p>
-                        <br>
-                        {{ form.photo }} <br>
-                        {% for error in form.photo.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                        {% endfor %}
-                        </p>
-                        <p> {{ form.submit() }} </p>
-                    </form>
+                        {% if submission.evaluated %}
+                        <p>Evaluated: Score = {{ submission.score }}/30</p>
+                        {% else %}
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {{ form.hidden_tag() }}
+                            <p>
+                            <br>
+                            {{ form.photo }} <br>
+                            {% for error in form.photo.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                            </p>
+                            <p> {{ form.submit() }} </p>
+                        </form>
+
+                        {% endif %}
+
                     {% endif %}
                 {% endif %}
             </div>
